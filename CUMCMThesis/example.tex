@@ -139,7 +139,7 @@
 \begin{figure}[H]
 	\small
 	\centering
-	\includegraphics[width=15cm]{../../img/1.png}
+	\includegraphics[width=15cm]{../../img/0.png}
 	% \caption{任务分布图}
 \end{figure}
 
@@ -173,12 +173,94 @@
 
 \subsection{数据分析}
 
-\begin{enumerate}[label=(\alph*)]
-    \item 单品按时间供应分类
-    \item 同货异源类蔬菜的分析
-    \item 打折单品与退货单品分析
-    如图2, 对两者进行 Fisher 精确性检验可以发现p 值小于 0.05，说明两者存在相关关系，具体来说即，当打折销售时退货的概率会降低。
-\end{enumerate}
+\subsubsection{单品按时间供应分类}
+对蔬菜的进货信息分析，发现蔬菜的供应季节、周期、时间存在明显差异，查阅相关资料后，本文将从供应时间的角度将蔬菜单品分为以下三类：
+\begin{itemize}
+    \item 常年性蔬菜：这些产品可以在不同的地区或国家生产, 几乎整年都可以获得。
+    \item 季节性蔬菜：受气候和地理条件影响，该类产品只在特定的季节内生长与销售。
+    \item 时令性蔬菜：该类产品仅在某些特定的节日、假期、节气等短期时间销售。
+\end{itemize}
+
+结合题设信息，本文设定如下分类规则：
+
+\begin{description}
+    \item[规则1] 三年中某一年可供天数大于 300 天，划分为常年性蔬菜；
+    \item[规则2] 每年最大可供天数小于 15 天，划分为时令性蔬菜；
+\end{description}
+
+经过规则一处理了 30 个单品、经过规则二处理了 70 个单品，剩余单品划分为季节性蔬菜，对季节性蔬菜进行季节分析进一步统计其所出现的季节，发现如下信息：
+
+\begin{itemize}
+    \item 若某单品每年可供天数虽不超过 300 天，但是在各季节均可供，应属于常年性蔬菜；
+    \item 若某单品在某些季节可供，但可供天数极少，为异常数据，不能视为该季节蔬菜；
+    \item 若某单品在某季节集中供应且其余季节无供应，则属于典型该季节蔬菜。
+\end{itemize}
+
+基于以上信息，增加如下规则：
+
+\begin{description}
+    \item[规则3] 四季都可供，且各季节三年可供天数均大于 20 天，划分为常年性蔬菜；
+    \item[规则4] 各个季节三年共计可供天数均小于 20 天，划分为时令性蔬菜；
+\end{description}
+
+经过规则 3、规则 4 修正，分别处理了 46 个单品、12 个单品，余下的 90 种蔬菜均划为季节性蔬菜，具体分类结果见支持材料，占比情况和部分结果如下：
+
+\begin{figure}[H]
+    \small
+    \centering
+    \includegraphics[width=12cm]{../../img/1.png}
+    \caption{各类型蔬菜占比}
+	\label{fig1}
+\end{figure}
+
+\begin{table}[H]
+	\centering
+	\caption{各类型蔬菜举例}
+	\begin{tblr}{
+	  cells = {c},
+	  hline{1-2,5} = {-}{},
+	}
+	蔬菜类型     & 举例         \\
+	常年性 30\% & 大白菜、胡萝卜、土豆 \\
+	季节性 37\% & 槐花、野藕、薄荷叶  \\
+	时令性 33\% & 莲藕、蒲公英、荸荠  
+	\end{tblr}
+	\end{table}
+
+	进一步，我们根据各季节性蔬菜在进货信息中常出现的月份，推测各个季节性蔬菜其所属的季节，具体结果见支撑材料。查阅相关资料，我们发现分类的结果十分贴合生活常识，验证了分类的精确性。这为之后蔬菜的分析提供可靠的参考。如“四川红香椿”，统计分析其为春季蔬菜，查阅资料后发现其 3 月末到 4 月初为采摘和食用的黄金时间。
+
+\subsubsection{同货异源类蔬菜的分析}
+
+题目给出的数据中包含不同供应地的同种蔬菜，为避免其对后续建模造成影响，进行其统计分析，发现主要可以分为两种类型：
+
+\begin{itemize}
+    \item 销量均衡类：如黄心菜 (1) 与黄心菜 (2)，销量分别为 2911kg 与 1882kg, 共计 6 种
+    \item 销量失衡类：如紫茄子 (1) 与紫茄子 (2)，销量分别为 279kg 与 13602kg, 共计 13 种但是由于同货异源类蔬菜的进价和售价并不相同，故不能将其合并，应当视作两种
+\end{itemize}
+
+不同的蔬菜，故本文不对其做过多处理。
+
+\subsubsection{打折单品与退货单品分析}
+
+应当注意到，少量（5.39\%）蔬菜由于品相等原因打折销售，极少量（5‰）订单由于未知因素被退货。前者因为打折而导致销售单价及销量发生改变、后者因为销售单价为负与正常项不同，但经过数据按时间聚合后，两类数据均不会对结果造成影响。
+
+\begin{figure}[H]
+    \small
+    \centering
+    \includegraphics[width=8cm]{../../img/2.png}
+    \caption{打折与退货的关系}
+	\label{fig2}
+\end{figure}
+
+\begin{figure}[H]
+    \small
+    \centering
+    \includegraphics[width=8cm]{../../img/3.png}
+    \caption{商品加成率分布图}
+	\label{fig3}
+\end{figure}
+
+如图2, 对两者进行 Fisher 精确性检验可以发现p 值小于 0.05，说明两者存在相关关系，具体来说即，当打折销售时退货的概率会降低。
 
 \subsection{异常数据处理}
 
@@ -186,7 +268,7 @@
 \begin{itemize}
     \item 3σ 法则：剔除利润率偏差极大的数值
     \item 修正处理：将利润率大于 2 的销售记录剔除
-\end{itemize}\
+\end{itemize}
 
 经过处理之后，删去 16430 条销售记录，对商品加成率画出分布图如图3所示。
 
@@ -201,88 +283,89 @@
 
 \section{问题一的模型建立与求解}
 
-%参考文献
-\bibliographystyle{unsrt}
-\bibliography{reference}
+\begin{figure}[H]
+    \small
+    \centering
+    \includegraphics[width=8cm]{../../img/4.png}
+    % \caption{商品加成率分布图}
+	\label{fig4}
+\end{figure}
 
+\subsection{问题聚焦}
 
+问题一要求探究各个品类及单品的蔬菜销售量的分布规律以及相互关系。由于能够考虑的方面很多，我们将问题聚焦为探究以下三个部分：
 
+\subsubsection{分布规律之时间：}
 
+题中所给的蔬菜销售数据，存在长期变化趋势和周期变化规律，并且受到购买蔬菜的顾客生活习惯、工作时间以及气候等因素的影响。这些因素对于大部分单品与品类产生的影响是同向性的，能体现外部经济、环境因素的作用。
 
+\begin{itemize}
+	\item 首先，对销售总量进行时间上的分布规律分析，观察外部因素对总体销售量的影响；
+	\item 其次，对各品类不同时间维度上的销量分布分析，发掘人们对各个品类的不同需求；
+	\item 最后，基于单品的时间分类对各单品探究其时间分布规律。
+\end{itemize}
 
-\newpage
-%附录
-\begin{appendices}
-	\section{墨卡托投影法}
-	\begin{lstlisting}[language=matlab]
-function [x,y]=ll_xy(lng, lat)
-earthRad = 6378137.0;
-x = ((lng .* pi) ./ 180) .* earthRad;
-a = (lat .* pi) ./ 180;
-y = (earthRad ./ 2) .* log((1.0 + sin(a)) ./ (1.0 - sin(a)));
-end
+\subsubsection{分布规律之销售：}
 
-tic
-format long g
-[x_p ,y_p] = ll_xy(x,y);
-x_p = x_p - mean(x_p);
-y_p = y_p - mean(y_p);
-toc
- \end{lstlisting}
+商品销售模式根据其单笔平均销量以及出售次数的情况可以分为三种：多量少笔、少量多笔、以及零散销售。对每种单品以及品类的总销售量在每笔销售量上的分布情况分析，可以得到蔬菜销售分布规律。
 
-	\section{Kmeans-聚类算法}
-	\begin{lstlisting}[language=matlab]
-opts = statset('Display','final');
-%调用 Kmeans 函数
-%X N*P 的数据矩阵
-%Idx N*1 的向量,存储的是每个点的聚类标号
-%Ctrs K*P 的矩阵,存储的是 K 个聚类质心位置
-%SumD 1*K 的和向量,存储的是类间所有点与该类质心点距离之和
-%D N*K 的矩阵，存储的是每个点与所有质心的距离;
-[Idx,Ctrs,SumD,D] = kmeans(X,4,'Replicates',2,'Options',opts);
-%画出聚类为 1 的点。X(Idx==1,1),为第一类的样本的第一个坐标；X(Idx==1,2为第二类的样本的第二个坐标
-plot(X(Idx==1,1),X(Idx==1,2),'r.','MarkerSize',14)
-hold on
-plot(X(Idx==2,1),X(Idx==2,2),'b.','MarkerSize',14)
-hold on
-plot(X(Idx==3,1),X(Idx==3,2),'g.','MarkerSize',14)
-hold on 
-plot(X(Idx==4,1),X(Idx==4,2),'y.','MarkerSize',14)
-%绘出聚类中心点,kx 表示是圆形
-plot(Ctrs(:,1),Ctrs(:,2),'kx','MarkerSize',14,'LineWidth',4)
-%legend('Cluster 1','Cluster 2','Cluster3','Centroids','Location','NW')
-Ctrs
-SumD
- \end{lstlisting}
+\subsubsection{相互关系：}
 
-	\section{层次聚类法}
-	\begin{lstlisting}[language=python]
-import pandas as pd
-import seaborn as sns  # 用于绘制热图的工具包
-from scipy.cluster import hierarchy  # 用于进行层次聚类，话层次聚类图的工具包
-from scipy import cluster
-import matplotlib.pyplot as plt
-from sklearn import decomposition as skldec  # 用于主成分分析降维的包
+探究品类、单品销售量的相互关系时需要注意去除外界因素的干扰，剔除经济、社会、生活习惯对每个品类、单品的影响。本文认为经济生活状况对各种品类销量的影响主要体现在总销量的变化，因此本文采用偏相关性分析剔除其他因素的影响。
 
-from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
-from matplotlib import pyplot as plt
+\subsection{时间分布规律的探究}
 
-df = pd.read_excel("tempdata.xlsx", index_col=0, header=None)  #index_col=0指定数据中第一列是类别名称，PS：计算机程序一般从整数0开始计数，所以0就代表第一列
-# df = df.T    #python默认每行是一个样本，如果数据每列是一个样本的话，转置一下即可
+为确定蔬菜总销售量在三年中的变化是否含有周期性的规律变化，本文通过以下三个步骤进行分析：
 
-X = df.index
-# print (X)
-# method是指计算类间距离的方法,比较常用的有3种:
-# single:最近邻,把类与类间距离最近的作为类间距
-# average:平均距离,类与类间所有pairs距离的平均
-# complete:最远邻,把类与类间距离最远的作为类间距
-Z = linkage(X, 'average')
-f = fcluster(Z, 4, 'distance')
-fig = plt.figure()
-dn = dendrogram(Z)
-plt.show()
+\begin{description}
+	\item[步骤一] 作图分析：绘制时间序列图，观察曲线趋势，初步分析可能存在的趋势、周期。
+	\item[步骤二] 周期性判定：本文采用自相关函数（ACF）图进行时间序列的周期判定。
+	\item[步骤三] 时间序列分解：判定周期性后，仍不能确定一个周期内的变化规律，因此本文采用时间序列分解，分离时间序列的总体趋势，周期规律。
+\end{description}
 
- \end{lstlisting}
-\end{appendices}
+\subsubsection{基于自相关函数 ACF 的时间序列分解的模型建}
+
+立自相关函数 ACF：
+
+一个时间序列在不同时间点的值之间可能存在相关性。自相关性通过计算时间序列在不同滞后阶段之间的相关系数来衡量这种相关性。如果在某个滞后阶段存在显著的相关性，那么可以认为时间序列在该阶段具有自相关性。可以按照如下步骤操作：
+
+\begin{enumerate}
+	\item ACF 的计算：
+	自相关系数计算公式为：
+	$$
+	\rho _k=\frac{Cov\left( X_t,X_{t-k} \right)}{Var\left( X_t \right)}
+	$$
+	其中，Xt 是时间序列在时间点 t 的值，Xt−k 是在 t 时刻滞后 k 期的值，Cov 表示协方差，V ar 表示方差。
+	
+	\item ACF 图的绘制：
+	将计算得到的自相关系数绘制成 ACF 图。横轴表示滞后阶段（lag），
+纵轴表示自相关系数的值。
+
+	\item ACF 图的解释：
+	相关系数在滞后阶段 0 处为 1，因为时间序列与自身在同一时间点的相关性始终是 1。其他滞后阶段的相关系数将在 ACF 图中显示。
+
+	\begin{itemize}
+		\item 若 ACF 图在之后的滞后阶段上有正相关性，可能表示存在季节性模式。
+		\item 若 ACF 图在之后的滞后阶段上有负相关性，可能表示存在反向的季节性模式。
+		\item 若 ACF 图在之后的滞后阶段上都接近零，可能表示时间序列随机，无自相关性。
+		\item 若 ACF 图在某个滞后阶段上出现显著的峰值，相关性系数高于显著性阈值，则表示存在周期性或趋势。
+	\end{itemize}
+\end{enumerate}
+
+乘法时间序列分解:
+
+乘法分解假定时间序列是由趋势、季节性、周期性和噪声等组成部分相乘而成的，通常表示为：
+
+$$
+Y_t=T_t\cdot S_t\cdot C_t\cdot E_t
+$$
+
+其中 Yt 为观测值，Tt 表示趋势成分，Qt 表示季节性成分，Ct 表示周期性成分，Et 表示随机噪音。
+
+\subsubsection{时间分布规律的求解结果}
+
+(a) 总销量的分布规律
+
+总销量在三年间的变化曲线如图4所示，总体销量在 2021.2-2022.5 年间处于低迷状态，并于 2023 年明显提高。
 
 \end{document}
